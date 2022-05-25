@@ -18,7 +18,7 @@ namespace Nop.Web.Areas.Admin.Factories
         /// The task result contains the app settings model
         /// </returns>
         Task<AppSettingsModel> PrepareAppSettingsModel(AppSettingsModel model = null);
-
+        
         /// <summary>
         /// Prepare blog settings model
         /// </summary>

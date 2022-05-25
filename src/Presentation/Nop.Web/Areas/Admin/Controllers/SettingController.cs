@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -239,7 +240,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             //if we got this far, something failed, redisplay form
             return View(model);
         }
-
+        
         public virtual async Task<IActionResult> Blog()
         {
             if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageSettings))
@@ -1578,6 +1579,15 @@ namespace Nop.Web.Areas.Admin.Controllers
                 securitySettings.HoneypotEnabled = model.SecuritySettings.HoneypotEnabled;
                 await _settingService.SaveSettingAsync(securitySettings);
 
+                //robots.txt settings
+                var robotsTxtSettings = await _settingService.LoadSettingAsync<RobotsTxtSettings>(storeScope);
+                robotsTxtSettings.AllowSitemapXml = model.RobotsTxtSettings.AllowSitemapXml;
+                robotsTxtSettings.AdditionsRules = model.RobotsTxtSettings.AdditionsRules;
+                robotsTxtSettings.DisallowLanguages = model.RobotsTxtSettings.DisallowLanguages.ToList();
+                robotsTxtSettings.DisallowPaths = model.RobotsTxtSettings.DisallowPaths.Split("\r\n").ToList();
+                robotsTxtSettings.LocalizableDisallowPaths = model.RobotsTxtSettings.LocalizableDisallowPaths.Split("\r\n").ToList();
+                await _settingService.SaveSettingAsync(robotsTxtSettings);
+                
                 //captcha settings
                 var captchaSettings = await _settingService.LoadSettingAsync<CaptchaSettings>(storeScope);
                 captchaSettings.Enabled = model.CaptchaSettings.Enabled;
@@ -1728,6 +1738,8 @@ namespace Nop.Web.Areas.Admin.Controllers
 
                 //now clear settings cache
                 await _settingService.ClearCacheAsync();
+
+
 
                 //admin area
                 var adminAreaSettings = await _settingService.LoadSettingAsync<AdminAreaSettings>(storeScope);

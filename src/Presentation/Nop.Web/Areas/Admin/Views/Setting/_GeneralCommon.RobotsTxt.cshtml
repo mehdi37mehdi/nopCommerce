@@ -1,0 +1,76 @@
+@model GeneralCommonSettingsModel
+
+@{
+   const int textAreaRows = 10;
+}
+
+<div class="card-body">
+    @if (!string.IsNullOrEmpty(Model.RobotsTxtSettings.CustomFileExists))
+    {
+        <h4>@Model.RobotsTxtSettings.CustomFileExists</h4>
+    }
+    else
+    {
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="@Model.RobotsTxtSettings.AllowSitemapXml"/>
+            </div>
+            <div class="col-md-9">
+                <nop-editor asp-for="@Model.RobotsTxtSettings.AllowSitemapXml"/>
+                <span asp-validation-for="@Model.RobotsTxtSettings.AllowSitemapXml"></span>
+            </div>
+        </div>
+        @if (Model.RobotsTxtSettings.AvailableLanguages.Any())
+        {
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="RobotsTxtSettings.DisallowLanguages"/>
+                </div>
+                <div class="col-md-9">
+                    <nop-select asp-for="RobotsTxtSettings.DisallowLanguages" asp-items="Model.RobotsTxtSettings.AvailableLanguages" asp-multiple="true"/>
+                    <script>
+                        $(document).ready(function() {
+                            var categoryIdsInput = $('#@Html.IdFor(model => model.RobotsTxtSettings.DisallowLanguages)').data("kendoMultiSelect");
+                            categoryIdsInput.setOptions({
+                                autoClose: false,
+                                filter: "contains"
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        }
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="@Model.RobotsTxtSettings.DisallowPaths"/>
+            </div>
+            <div class="col-md-9">
+                <nop-textarea rows="@textAreaRows" asp-for="@Model.RobotsTxtSettings.DisallowPaths"></nop-textarea>
+                <span asp-validation-for="@Model.RobotsTxtSettings.DisallowPaths"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="@Model.RobotsTxtSettings.LocalizableDisallowPaths"/>
+            </div>
+            <div class="col-md-9">
+                <nop-textarea rows="@textAreaRows" asp-for="@Model.RobotsTxtSettings.LocalizableDisallowPaths"></nop-textarea>
+                <span asp-validation-for="@Model.RobotsTxtSettings.LocalizableDisallowPaths"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="@Model.RobotsTxtSettings.AdditionsRules"/>
+            </div>
+            <div class="col-md-9">
+                <nop-textarea rows="@textAreaRows" asp-for="@Model.RobotsTxtSettings.AdditionsRules"></nop-textarea>
+                <span asp-validation-for="@Model.RobotsTxtSettings.AdditionsRules"></span>
+            </div>
+        </div>
+    }
+
+    <h4>@Html.Raw(Model.RobotsTxtSettings.AdditionsInstruction)</h4>
+</div>
